@@ -1,0 +1,81 @@
+/* src/styles/variables.css */
+/* This file contains all our design system variables */
+
+:root {
+    /* ============================================ */
+    /* COLORS - Background gradients for different modes */
+    /* ============================================ */
+    
+    /* Work mode - Red/Pink gradient */
+    --color-work: linear-gradient(135deg, #dc2626 0%, #db2777 100%);
+    
+    /* Break mode - Green gradient */
+    --color-break: linear-gradient(135deg, #059669 0%, #047857 100%);
+    
+    /* Long break mode - Blue gradient */
+    --color-long-break: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+    
+    /* ============================================ */
+    /* GLASS EFFECT - For that modern frosted glass look */
+    /* ============================================ */
+    
+    /* Semi-transparent white background */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    
+    /* Subtle white border */
+    --glass-border: rgba(255, 255, 255, 0.2);
+    
+    /* Blur effect for glassmorphism */
+    --glass-blur: blur(20px);
+    
+    /* ============================================ */
+    /* SHADOWS - For depth and elevation */
+    /* ============================================ */
+    
+    /* Main card shadow - creates floating effect */
+    --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.2), 0 8px 25px rgba(0, 0, 0, 0.1);
+    
+    /* Text shadow - makes text pop on colorful backgrounds */
+    --shadow-text: 0 2px 15px rgba(0, 0, 0, 0.3);
+    
+    /* Button shadow - subtle elevation */
+    --shadow-button: 0 4px 15px rgba(0, 0, 0, 0.2);
+    
+    /* ============================================ */
+    /* SPACING - Consistent spacing throughout app */
+    /* ============================================ */
+    
+    --spacing-xs: 0.25rem;    /* 4px - tiny gaps */
+    --spacing-sm: 0.5rem;     /* 8px - small gaps */
+    --spacing-md: 1rem;       /* 16px - medium gaps */
+    --spacing-lg: 1.5rem;     /* 24px - large gaps */
+    --spacing-xl: 2rem;       /* 32px - extra large gaps */
+    
+    /* ============================================ */
+    /* BORDER RADIUS - Rounded corners */
+    /* ============================================ */
+    
+    --radius-sm: 8px;         /* Small rounded corners */
+    --radius-md: 15px;        /* Medium rounded corners */
+    --radius-lg: 20px;        /* Large rounded corners */
+    --radius-xl: 25px;        /* Extra large rounded corners */
+    --radius-full: 50%;       /* Perfect circles */
+    
+    /* ============================================ */
+    /* TYPOGRAPHY - Font families and sizes */
+    /* ============================================ */
+    
+    /* Main font family - system fonts for best performance */
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+    
+    /* Monospace font for timer display */
+    --font-mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace;
+    
+    /* ============================================ */
+    /* TRANSITIONS - Smooth animations */
+    /* ============================================ */
+    
+    --transition-fast: 0.2s ease;     /* Quick hover effects */
+    --transition-normal: 0.3s ease;   /* Standard transitions */
+    --transition-slow: 0.5s ease;     /* Background color changes */
+  }
