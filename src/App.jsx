@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/global.css';  // Global styles
 import './styles/App.css';     // App-specific styles
 
@@ -7,6 +7,27 @@ function App() {
   // State
   const [timeLeft, setTimeLeft] = useState(1500); // 25 min
   const [isActive, setIsActive] = useState(false); // false = stopped, true = running
+
+  useEffect(() => {
+    console.log('useEffect triggered - isActive:', isActive, 'timeLeft:', timeLeft);
+    let interval = null;
+    if (isActive && timeLeft > 0) {
+      console.log('Starting countdown...');
+
+      interval = setInterval(() => {
+        console.log('Reducing time by 1 second');
+        setTimeLeft(prevTime => prevTime - 1);
+      }, 1000);
+    } else {
+      console.log('Stopping countdown');
+      clearInterval(interval);
+    }
+
+    return () => {
+      console.log('Cleaning up interval');
+      clearInterval(interval);
+    };
+  }, [isActive, timeLeft]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60); // whole minutes
