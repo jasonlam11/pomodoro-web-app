@@ -1,56 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import './styles/global.css';  // Global styles
-import './styles/App.css';     // App-specific styles
+import React, { useState, useEffect, useCallback } from 'react';
+import './styles/global.css';
+import './styles/App.css';
 
 function App() {
+  const [timeLeft, setTimeLeft] = useState(1500); // 25 minutes in seconds
+  const [isActive, setIsActive] = useState(false); // Timer running state
+  const [mode, setMode] = useState('work');        // Timer mode
+  const [session, setSession] = useState(1);       // Current session number
+  const [completedSessions, setCompletedSessions] = useState(0); // Completed sessions
 
-  // State
-  const [timeLeft, setTimeLeft] = useState(1500); // 25 min
-  const [isActive, setIsActive] = useState(false); // false = stopped, true = running
+  // Handle timer completion (when it reaches 00:00)
+  const handleTimerComplete = useCallback(() => {
+    console.log('Timer completed!');
+
+    if (mode === 'work') {
+      // Work session completed
+      setCompletedSessions(prev => prev + 1);
+
+      // Determine next mode: every 4th session is a long break
+      if (session % 4 === 0) {
+        setMode('longBreak');
+        setTimeLeft(15 * 60); // 15 minutes
+      } else {
+        setMode('break');
+        setTimeLeft(5 * 60);  // 5 minutes
+      }
+    } else {
+      // Break completed - back to work
+      setMode('work');
+      setTimeLeft(25 * 60); // 25 minutes
+      setSession(prev => prev + 1);
+    }
+  }, [mode, session]);
 
   useEffect(() => {
-    console.log('useEffect triggered - isActive:', isActive, 'timeLeft:', timeLeft);
     let interval = null;
-    if (isActive && timeLeft > 0) {
-      console.log('Starting countdown...');
 
+    if (isActive && timeLeft > 0) {
+      // timer running and time left
       interval = setInterval(() => {
-        console.log('Reducing time by 1 second');
         setTimeLeft(prevTime => prevTime - 1);
       }, 1000);
-    } else {
-      console.log('Stopping countdown');
-      clearInterval(interval);
+    } else if (timeLeft === 0) {
+      // timer reached zero
+      setIsActive(false);
+      handleTimerComplete();
     }
 
-    return () => {
-      console.log('Cleaning up interval');
-      clearInterval(interval);
-    };
-  }, [isActive, timeLeft]);
+    return () => clearInterval(interval);
 
+  }, [isActive, timeLeft, handleTimerComplete]);
+
+  // Convert seconds to MM:SS format
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60); // whole minutes
-    const secs = seconds % 60; // remaining seconds
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
-    const minsStr = mins.toString().padStart(2, '0');
-    const secsStr = secs.toString().padStart(2, '0');
-
-    return `${minsStr}:${secsStr}`;
-  }
+  const getModeText = () => {
+    switch (mode) {
+      case 'work': return 'Work Time';
+      case 'break': return 'Short Break';
+      case 'longBreak': return 'Long Break';
+      default: return 'Work Time';
+    }
+  };
 
   const handleStartPause = () => {
-    console.log('Button clicked! Current isActive:', isActive);
     setIsActive(!isActive);
   };
 
+  // handle reset button
   const handleReset = () => {
-    console.log('Reset clicked!');
+    setIsActive(false);
 
-    setIsActive(false);  // Stop the timer
-    setTimeLeft(1500);   // Reset to 25 minutes
-
-    console.log('Timer reset to 1500 seconds (25:00)');
+    switch (mode) {
+      case 'work':
+        setTimeLeft(25 * 60);
+        break;
+      case 'break':
+        setTimeLeft(5 * 60);
+        break;
+      case 'longBreak':
+        setTimeLeft(15 * 60);
+        break;
+      default:
+        setTimeLeft(25 * 60);
+    }
   };
 
   return (
@@ -62,11 +99,11 @@ function App() {
         {/* Header Section */}
         <header className="app-header">
           <h1 className="app-title">Pomodoro Timer</h1>
-          <p className="app-subtitle">Work Time</p>
+          <p className="app-subtitle">{getModeText()}</p>
           <div className="session-info">
-            <span className="session-badge">Session 1</span>
+            <span className="session-badge">Session {session}</span>
             <span className="separator">•</span>
-            <span className="session-badge">Completed: 0</span>
+            <span className="session-badge">Completed: {completedSessions}</span>
           </div>
         </header>
 
@@ -77,12 +114,32 @@ function App() {
 
         {/* Control Buttons Section */}
         <div className="control-buttons">
-          <button className="btn-primary" onClick={handleStartPause}>
+          <button
+            className="btn-primary"
+            onClick={handleStartPause}
+            disabled={timeLeft === 0} // Disable if timer is at 0
+          >
             {isActive ? 'Pause' : 'Start'}
           </button>
           <button className="btn-secondary" onClick={handleReset}>
             Reset
           </button>
+        </div>
+
+        {/* Timer Status Indicator */}
+        <div style={{
+          marginTop: '20px',
+          textAlign: 'center',
+          color: 'rgba(255,255,255,0.7)',
+          fontSize: '0.9rem'
+        }}>
+          {isActive ? (
+            <span>🍅 Focus time! Keep going...</span>
+          ) : timeLeft === 0 ? (
+            <span>🎉 Time's up! Great work!</span>
+          ) : (
+            <span>Ready to start your session?</span>
+          )}
         </div>
 
       </div>
