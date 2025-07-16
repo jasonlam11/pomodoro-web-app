@@ -2,6 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './styles/global.css';
 import './styles/App.css';
 
+const soundUrl = process.env.PUBLIC_URL + '/sounds/alarm.mp3';
+const playSound = () => {
+  const audio = new Audio(soundUrl);
+  audio.play();
+};
+
 function App() {
   const [workTime, setWorkTime] = useState(25);   // in minutes
   const [breakTime, setBreakTime] = useState(5);  // in minutes
@@ -13,20 +19,14 @@ function App() {
 
   // Handle timer completion (when it reaches 00:00)
   const handleTimerComplete = useCallback(() => {
+    playSound();
     console.log('Timer completed!');
 
     if (mode === 'work') {
       // Work session completed
       setCompletedSessions(prev => prev + 1);
-
-      // Determine next mode: every 4th session is a long break
-      if (session % 4 === 0) {
-        setMode('longBreak');
-        setTimeLeft(15 * 60); // 15 minutes
-      } else {
-        setMode('break');
-        setTimeLeft(breakTime * 60);  // Use selected break time
-      }
+      setMode('break');
+      setTimeLeft(breakTime * 60);  // Always use selected break time
     } else {
       // Break completed - back to work
       setMode('work');
@@ -43,7 +43,7 @@ function App() {
       interval = setInterval(() => {
         setTimeLeft(prevTime => prevTime - 1);
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && isActive) {
       // timer reached zero
       setIsActive(false);
       handleTimerComplete();
@@ -63,9 +63,20 @@ function App() {
   const getModeText = () => {
     switch (mode) {
       case 'work': return 'Work Time';
-      case 'break': return 'Short Break';
-      case 'longBreak': return 'Long Break';
+      case 'break': return 'Break Time';
       default: return 'Work Time';
+    }
+  };
+
+  // Helper to determine if timer is at initial value for current mode
+  const getInitialTime = () => {
+    switch (mode) {
+      case 'work':
+        return workTime * 60;
+      case 'break':
+        return breakTime * 60;
+      default:
+        return workTime * 60;
     }
   };
 
@@ -83,9 +94,6 @@ function App() {
         break;
       case 'break':
         setTimeLeft(breakTime * 60);
-        break;
-      case 'longBreak':
-        setTimeLeft(15 * 60);
         break;
       default:
         setTimeLeft(workTime * 60);
@@ -172,7 +180,11 @@ function App() {
             onClick={handleStartPause}
             disabled={timeLeft === 0}
           >
-            {isActive ? 'Pause' : 'Start'}
+            {isActive
+              ? 'Pause'
+              : timeLeft !== getInitialTime()
+                ? 'Resume'
+                : 'Start'}
           </button>
           <button className="btn-secondary" onClick={handleReset}>
             Reset
