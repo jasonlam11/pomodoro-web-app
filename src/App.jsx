@@ -3,6 +3,8 @@ import './styles/global.css';
 import './styles/App.css';
 
 function App() {
+  const [workTime, setWorkTime] = useState(25);   // in minutes
+  const [breakTime, setBreakTime] = useState(5);  // in minutes
   const [timeLeft, setTimeLeft] = useState(1500); // 25 minutes in seconds
   const [isActive, setIsActive] = useState(false); // Timer running state
   const [mode, setMode] = useState('work');        // Timer mode
@@ -23,15 +25,15 @@ function App() {
         setTimeLeft(15 * 60); // 15 minutes
       } else {
         setMode('break');
-        setTimeLeft(5 * 60);  // 5 minutes
+        setTimeLeft(breakTime * 60);  // Use selected break time
       }
     } else {
       // Break completed - back to work
       setMode('work');
-      setTimeLeft(25 * 60); // 25 minutes
+      setTimeLeft(workTime * 60); // Use selected work time
       setSession(prev => prev + 1);
     }
-  }, [mode, session]);
+  }, [mode, session, workTime, breakTime]);
 
   useEffect(() => {
     let interval = null;
@@ -67,36 +69,49 @@ function App() {
     }
   };
 
+  // Handle start/pause button
   const handleStartPause = () => {
     setIsActive(!isActive);
   };
 
-  // handle reset button
+  // Handle reset button
   const handleReset = () => {
     setIsActive(false);
-
     switch (mode) {
       case 'work':
-        setTimeLeft(25 * 60);
+        setTimeLeft(workTime * 60);
         break;
       case 'break':
-        setTimeLeft(5 * 60);
+        setTimeLeft(breakTime * 60);
         break;
       case 'longBreak':
         setTimeLeft(15 * 60);
         break;
       default:
-        setTimeLeft(25 * 60);
+        setTimeLeft(workTime * 60);
+    }
+  };
+
+  // Handlers for dropdowns
+  const handleWorkTimeChange = (e) => {
+    const newWorkTime = parseInt(e.target.value, 10);
+    setWorkTime(newWorkTime);
+    if (mode === 'work' && !isActive) {
+      setTimeLeft(newWorkTime * 60);
+    }
+  };
+
+  const handleBreakTimeChange = (e) => {
+    const newBreakTime = parseInt(e.target.value, 10);
+    setBreakTime(newBreakTime);
+    if (mode === 'break' && !isActive) {
+      setTimeLeft(newBreakTime * 60);
     }
   };
 
   return (
     <div className="app-container">
-
-      {/* Main Timer Card */}
       <div className="timer-card">
-
-        {/* Header Section */}
         <header className="app-header">
           <h1 className="app-title">Pomodoro Timer</h1>
           <p className="app-subtitle">{getModeText()}</p>
@@ -107,9 +122,47 @@ function App() {
           </div>
         </header>
 
-        {/* Timer Display Section */}
         <div className="timer-display">
           <div className="timer-text">{formatTime(timeLeft)}</div>
+        </div>
+
+        {/* Settings Panel with Dropdowns */}
+        <div className="settings-panel">
+          <h3 className="settings-title">⚙️ Timer Settings</h3>
+          <div className="settings-grid">
+            {/* Work Time Dropdown */}
+            <div className="dropdown-group">
+              <label className="dropdown-label" htmlFor="work-time">Study Time</label>
+              <select
+                id="work-time"
+                value={workTime}
+                onChange={handleWorkTimeChange}
+                disabled={isActive}
+                className="dropdown-select"
+              >
+                {[...Array(12)].map((_, i) => {
+                  const val = 5 * (i + 1);
+                  return <option key={val} value={val}>{val} minutes</option>;
+                })}
+              </select>
+            </div>
+            {/* Break Time Dropdown */}
+            <div className="dropdown-group">
+              <label className="dropdown-label" htmlFor="break-time">Break Time</label>
+              <select
+                id="break-time"
+                value={breakTime}
+                onChange={handleBreakTimeChange}
+                disabled={isActive}
+                className="dropdown-select"
+              >
+                {[...Array(6)].map((_, i) => {
+                  const val = 5 * (i + 1);
+                  return <option key={val} value={val}>{val} minutes</option>;
+                })}
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Control Buttons Section */}
@@ -117,7 +170,7 @@ function App() {
           <button
             className="btn-primary"
             onClick={handleStartPause}
-            disabled={timeLeft === 0} // Disable if timer is at 0
+            disabled={timeLeft === 0}
           >
             {isActive ? 'Pause' : 'Start'}
           </button>
@@ -141,9 +194,7 @@ function App() {
             <span>Ready to start your session?</span>
           )}
         </div>
-
       </div>
-
     </div>
   );
 }

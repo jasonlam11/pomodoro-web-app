@@ -70,27 +70,27 @@
     text-align: center;
     margin-bottom: var(--spacing-xl);
 }
-  
+
 .timer-text {
     color: white;
     font-family: var(--font-mono);
     font-size: 4rem;
     font-weight: bold;
     text-shadow: var(--shadow-text);
-    
+
     height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-  
+
 .control-buttons {
     text-align: center;
     display: flex;
     justify-content: center;
     gap: var(--spacing-md);
 }
-  
+
 .btn-primary {
     background-color: rgba(255, 255, 255, 0.9);
     color: #333;
@@ -100,13 +100,13 @@
     box-shadow: var(--shadow-button);
     transition: all var(--transition-normal);
 }
-  
+
 .btn-primary:hover {
     background-color: rgba(255, 255, 255, 1);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
-  
+
 .btn-secondary {
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
@@ -116,42 +116,103 @@
     font-weight: 500;
     transition: all var(--transition-normal);
 }
-  
+
 .btn-secondary:hover {
     background-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
-  
+
 @media (max-width: 768px) {
     .app-title {
-      font-size: 2rem;
+        font-size: 2rem;
     }
-    
+
     .timer-text {
-      font-size: 3rem;
+        font-size: 3rem;
     }
-    
+
     .timer-card {
-      padding: var(--spacing-lg);
+        padding: var(--spacing-lg);
     }
 }
-  
+
 @media (max-width: 480px) {
     .app-container {
-      padding: var(--spacing-sm);
+        padding: var(--spacing-sm);
     }
-    
+
     .app-title {
-      font-size: 1.75rem;
+        font-size: 1.75rem;
     }
-    
+
     .timer-text {
-      font-size: 2.5rem;
+        font-size: 2.5rem;
     }
-    
+
     .control-buttons {
-      flex-direction: column;
-      gap: var(--spacing-sm);
+        flex-direction: column;
+        gap: var(--spacing-sm);
     }
+}
+
+/* Settings Panel and Dropdowns */
+.settings-panel {
+    margin: 2rem 0 1.5rem 0;
+    padding: 1.5rem 1rem;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+.settings-title {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.settings-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.dropdown-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    margin-bottom: 0.5rem;
+}
+
+.dropdown-label {
+    color: #fff;
+    font-size: 0.98rem;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+
+.dropdown-select {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    color: #222;
+    transition: border 0.2s;
+    outline: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-select:focus {
+    border-color: #007bff;
+}
+
+.dropdown-select:disabled {
+    background: #eee;
+    color: #aaa;
+    cursor: not-allowed;
 }
